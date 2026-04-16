@@ -1,0 +1,69 @@
+# ===== Secrets / env =====
+.env
+.env.*
+*.env
+*.env.backup
+!.env.example
+
+# ===== Credentials / OAuth tokens =====
+google-ads.yaml
+credentials.json
+client_secret*.json
+token.json
+token.pickle
+service-account*.json
+*.json
+
+# ===== Cryptographic keys =====
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+
+# ===== Logs (peuvent contenir des tokens en mode DEBUG) =====
+*.log
+logs/
+
+# ===== Python bytecode / runtime =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ===== Python packaging =====
+*.egg-info/
+*.egg
+dist/
+build/
+
+# ===== Python tooling caches =====
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+
+# ===== Virtualenvs =====
+venv/
+.venv/
+env/
+ENV/
+
+# ===== IDE / éditeurs =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Claude Code (explicite — déjà couvert par *.json) =====
+.claude/settings.local.json
