@@ -1,4 +1,4 @@
-# adops-mcp
+# AdOps-MCP
 
 Serveurs MCP (Model Context Protocol) pour gérer des comptes Google Ads et Meta Ads via Claude.
 
