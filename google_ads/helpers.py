@@ -154,15 +154,19 @@ def format_google_ads_error(ex: GoogleAdsException) -> str:
             field_path = ".".join(el.field_name for el in error.location.field_path_elements)
         details.append(f"[{field_path or '-'}] {error.message}")
 
+    detail_str = " | ".join(details)
+
     if auth_error:
         return (
             "Refresh token Google Ads invalide ou expiré. "
-            "Régénère-le avec le compte Google qui a accès au MCC."
+            "Régénère-le avec le compte Google qui a accès au MCC. "
+            f"[Google: {detail_str}]"
         )
     if authz_error:
         return (
             "Pas d'accès au MCC Google Ads. Vérifie GOOGLE_ADS_LOGIN_CUSTOMER_ID "
-            "et que le compte Google du refresh token est bien invité sur ce MCC."
+            "et que le compte Google du refresh token est bien invité sur ce MCC. "
+            f"[Google: {detail_str}]"
         )
 
     return (

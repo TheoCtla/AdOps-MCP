@@ -13,25 +13,62 @@ from __future__ import annotations
 from mcp.server import Server
 
 from google_ads.tools.read import (
+    get_ad_schedule,
     get_adgroup_performance,
     get_ads,
+    get_age_gender_performance,
+    get_auction_insights,
+    get_audiences,
+    get_bid_modifiers,
+    get_budget_info,
     get_campaign_performance,
+    get_campaign_settings,
+    get_change_history,
+    get_conversion_actions,
     get_daily_performance,
+    get_day_of_week_performance,
+    get_device_performance,
+    get_extensions,
+    get_geo_performance,
+    get_hour_of_day_performance,
     get_keywords,
+    get_labels,
+    get_landing_page_performance,
     get_negative_keywords,
     get_search_terms,
     list_accounts,
 )
 
 _READ_TOOLS = (
+    # --- Core performance ---
     list_accounts,
     get_campaign_performance,
     get_adgroup_performance,
     get_keywords,
     get_daily_performance,
+    # --- Search & optimization ---
     get_search_terms,
     get_negative_keywords,
     get_ads,
+    # --- Segmentation ---
+    get_geo_performance,
+    get_device_performance,
+    get_age_gender_performance,
+    get_hour_of_day_performance,
+    get_day_of_week_performance,
+    # --- Configuration ---
+    get_extensions,
+    get_campaign_settings,
+    get_ad_schedule,
+    get_bid_modifiers,
+    get_labels,
+    get_conversion_actions,
+    # --- Advanced ---
+    get_auction_insights,
+    get_landing_page_performance,
+    get_audiences,
+    get_change_history,
+    get_budget_info,
 )
 
 

@@ -204,3 +204,311 @@ ADS_QUERY = """
       {extra_where}
     ORDER BY metrics.impressions DESC
 """
+
+
+GEO_PERFORMANCE_QUERY = """
+    SELECT
+      geographic_view.country_criterion_id,
+      geographic_view.location_type,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM geographic_view
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      {extra_where}
+    ORDER BY metrics.cost_micros DESC
+    LIMIT 100
+"""
+
+
+DEVICE_PERFORMANCE_QUERY = """
+    SELECT
+      segments.device,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM campaign
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      AND campaign.status = 'ENABLED'
+      {extra_where}
+"""
+
+
+AGE_PERFORMANCE_QUERY = """
+    SELECT
+      ad_group_criterion.age_range.type,
+      ad_group.id,
+      ad_group.name,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM age_range_view
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      {extra_where}
+"""
+
+
+GENDER_PERFORMANCE_QUERY = """
+    SELECT
+      ad_group_criterion.gender.type,
+      ad_group.id,
+      ad_group.name,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM gender_view
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      {extra_where}
+"""
+
+
+HOUR_OF_DAY_PERFORMANCE_QUERY = """
+    SELECT
+      segments.hour,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM campaign
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      AND campaign.status = 'ENABLED'
+      {extra_where}
+    ORDER BY segments.hour ASC
+"""
+
+
+DAY_OF_WEEK_PERFORMANCE_QUERY = """
+    SELECT
+      segments.day_of_week,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM campaign
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      AND campaign.status = 'ENABLED'
+      {extra_where}
+"""
+
+
+EXTENSIONS_QUERY = """
+    SELECT
+      asset.id,
+      asset.type,
+      asset.name,
+      asset.sitelink_asset.link_text,
+      asset.sitelink_asset.description1,
+      asset.sitelink_asset.description2,
+      asset.final_urls,
+      asset.callout_asset.callout_text,
+      asset.structured_snippet_asset.header,
+      asset.structured_snippet_asset.values,
+      asset.image_asset.full_size.url,
+      asset.price_asset.price_offerings
+    FROM asset
+    WHERE asset.type IN ('SITELINK', 'CALLOUT', 'STRUCTURED_SNIPPET',
+      'IMAGE', 'PRICE', 'CALL')
+      {extra_where}
+"""
+
+
+CAMPAIGN_EXTENSIONS_QUERY = """
+    SELECT
+      asset.id,
+      asset.type,
+      asset.name,
+      asset.sitelink_asset.link_text,
+      asset.sitelink_asset.description1,
+      asset.sitelink_asset.description2,
+      asset.final_urls,
+      asset.callout_asset.callout_text,
+      asset.structured_snippet_asset.header,
+      asset.structured_snippet_asset.values,
+      asset.image_asset.full_size.url,
+      asset.price_asset.price_offerings,
+      campaign.id,
+      campaign.name
+    FROM campaign_asset
+    WHERE campaign.id = {campaign_id}
+      AND asset.type IN ('SITELINK', 'CALLOUT', 'STRUCTURED_SNIPPET',
+        'IMAGE', 'PRICE', 'CALL')
+      {extra_where}
+"""
+
+
+CAMPAIGN_SETTINGS_QUERY = """
+    SELECT
+      campaign.id,
+      campaign.name,
+      campaign.status,
+      campaign.advertising_channel_type,
+      campaign.advertising_channel_sub_type,
+      campaign.bidding_strategy_type,
+      campaign.target_cpa.target_cpa_micros,
+      campaign.target_roas.target_roas,
+      campaign.network_settings.target_google_search,
+      campaign.network_settings.target_search_network,
+      campaign.network_settings.target_content_network,
+      campaign.geo_target_type_setting.positive_geo_target_type,
+      campaign.geo_target_type_setting.negative_geo_target_type,
+      campaign_budget.amount_micros,
+      campaign_budget.delivery_method,
+      campaign_budget.type
+    FROM campaign
+    WHERE campaign.id = {campaign_id}
+"""
+
+
+AD_SCHEDULE_QUERY = """
+    SELECT
+      campaign_criterion.ad_schedule.day_of_week,
+      campaign_criterion.ad_schedule.start_hour,
+      campaign_criterion.ad_schedule.start_minute,
+      campaign_criterion.ad_schedule.end_hour,
+      campaign_criterion.ad_schedule.end_minute,
+      campaign_criterion.bid_modifier,
+      campaign.id,
+      campaign.name
+    FROM campaign_criterion
+    WHERE campaign_criterion.type = 'AD_SCHEDULE'
+      AND campaign.id = {campaign_id}
+"""
+
+
+BID_MODIFIERS_QUERY = """
+    SELECT
+      campaign_criterion.criterion_id,
+      campaign_criterion.type,
+      campaign_criterion.bid_modifier,
+      campaign.id,
+      campaign.name
+    FROM campaign_criterion
+    WHERE campaign_criterion.bid_modifier IS NOT NULL
+      AND campaign.id = {campaign_id}
+"""
+
+
+LABELS_QUERY = """
+    SELECT
+      label.id,
+      label.name,
+      label.text_label.description
+    FROM label
+"""
+
+
+CONVERSION_ACTIONS_QUERY = """
+    SELECT
+      conversion_action.id,
+      conversion_action.name,
+      conversion_action.type,
+      conversion_action.status,
+      conversion_action.category,
+      conversion_action.counting_type,
+      conversion_action.attribution_model_settings.attribution_model
+    FROM conversion_action
+    WHERE conversion_action.status = '{status}'
+"""
+
+
+AUCTION_INSIGHTS_QUERY = """
+    SELECT
+      segments.auction_insight_domain,
+      metrics.auction_insight_search_impression_share,
+      metrics.auction_insight_search_overlap_rate,
+      metrics.auction_insight_search_position_above_rate,
+      metrics.auction_insight_search_top_impression_percentage,
+      metrics.auction_insight_search_absolute_top_impression_percentage,
+      metrics.auction_insight_search_outranking_share
+    FROM campaign
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      AND campaign.id = {campaign_id}
+"""
+
+
+LANDING_PAGE_PERFORMANCE_QUERY = """
+    SELECT
+      landing_page_view.unexpanded_final_url,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value,
+      metrics.speed_score
+    FROM landing_page_view
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      {extra_where}
+    ORDER BY metrics.clicks DESC
+    LIMIT {limit}
+"""
+
+
+AUDIENCES_QUERY = """
+    SELECT
+      campaign_criterion.user_list.user_list,
+      campaign_criterion.type,
+      campaign_criterion.bid_modifier,
+      campaign.id,
+      campaign.name,
+      metrics.impressions,
+      metrics.clicks,
+      metrics.cost_micros,
+      metrics.conversions,
+      metrics.conversions_value
+    FROM campaign_audience_view
+    WHERE segments.date BETWEEN '{date_from}' AND '{date_to}'
+      {extra_where}
+    ORDER BY metrics.cost_micros DESC
+"""
+
+
+CHANGE_HISTORY_QUERY = """
+    SELECT
+      change_event.change_date_time,
+      change_event.user_email,
+      change_event.change_resource_type,
+      change_event.change_resource_name,
+      change_event.changed_fields,
+      change_event.client_type,
+      change_event.resource_change_operation
+    FROM change_event
+    WHERE change_event.change_date_time BETWEEN '{date_from}' AND '{date_to}'
+    ORDER BY change_event.change_date_time DESC
+    LIMIT {limit}
+"""
+
+
+BUDGET_INFO_QUERY = """
+    SELECT
+      campaign.id,
+      campaign.name,
+      campaign.status,
+      campaign_budget.amount_micros,
+      campaign_budget.type,
+      metrics.cost_micros
+    FROM campaign
+    WHERE campaign.status = 'ENABLED'
+      AND segments.date = '{today}'
+"""
