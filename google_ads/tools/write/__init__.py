@@ -10,6 +10,8 @@ from __future__ import annotations
 from mcp.server import Server
 
 from google_ads.tools.write import (
+    add_keyword,
+    add_negative_keyword,
     enable_ad,
     enable_ad_group,
     enable_campaign,
@@ -18,9 +20,13 @@ from google_ads.tools.write import (
     pause_ad_group,
     pause_campaign,
     pause_keyword,
+    remove_keyword,
+    remove_negative_keyword,
+    update_keyword_bid,
 )
 
 _WRITE_TOOLS = (
+    # --- Pause / Enable ---
     pause_campaign,
     enable_campaign,
     pause_ad_group,
@@ -29,6 +35,12 @@ _WRITE_TOOLS = (
     enable_ad,
     pause_keyword,
     enable_keyword,
+    # --- Keywords & Negatives ---
+    add_negative_keyword,
+    remove_negative_keyword,
+    add_keyword,
+    remove_keyword,
+    update_keyword_bid,
 )
 
 
