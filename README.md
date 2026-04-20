@@ -30,14 +30,17 @@ Chaque serveur expose à la fois des tools de lecture (performances, annonces, m
 **Fait :**
 - Authentification fonctionnelle sur les deux plateformes (Google Ads + Meta Ads)
 - Architecture du serveur MCP en place et validée end-to-end via MCP Inspector et Claude Code
-- 8 tools de lecture Google Ads opérationnels (comptes, performances campagnes/ad groups/mots-clés, daily, search terms, négatifs, annonces)
+- Architecture modulaire (1 tool = 1 fichier, helpers partagés, registre centralisé)
+- 24 tools de lecture Google Ads opérationnels :
+  - Core : comptes, performances campagnes/ad groups/mots-clés, daily
+  - Search & optimization : search terms, négatifs, annonces (RSA/ETA)
+  - Segmentation : géo, device, âge/genre, heure du jour, jour de la semaine
+  - Configuration : extensions, settings campagne, ad schedule, bid modifiers, labels, conversion actions
+  - Avancé : auction insights, landing pages, audiences, historique des changements, budget/pacing
+- 13 tools d'écriture Google Ads opérationnels :
+  - Pause/enable : campagnes, ad groups, annonces, mots-clés
+  - Keywords : ajout/suppression de mots-clés positifs et négatifs, modification d'enchères CPC
 
-**À venir :**
-- ~20 tools de lecture supplémentaires côté Google Ads (segmentation, configuration, analyses avancées)
-- ~25 tools d'écriture côté Google Ads
-- Côté Meta Ads : ~15 tools de lecture et ~25 tools d'écriture
-- Déploiement sur VPS avec exposition HTTPS
-- Documentation complète (installation, maintenance, troubleshooting)
 
 ## Stack
 
