@@ -37,9 +37,16 @@ Chaque serveur expose à la fois des tools de lecture (performances, annonces, m
   - Segmentation : géo, device, âge/genre, heure du jour, jour de la semaine
   - Configuration : extensions, settings campagne, ad schedule, bid modifiers, labels, conversion actions
   - Avancé : auction insights, landing pages, audiences, historique des changements, budget/pacing
-- 13 tools d'écriture Google Ads opérationnels :
+- 26 tools d'écriture Google Ads opérationnels :
   - Pause/enable : campagnes, ad groups, annonces, mots-clés
-  - Keywords : ajout/suppression de mots-clés positifs et négatifs, modification d'enchères CPC
+  - Keywords & négatifs : ajout/suppression de mots-clés positifs et négatifs, modification d'enchères CPC
+  - Budget & targeting : modification budget, bid modifiers, ad schedule, ciblage géo/langues
+  - Ads & assets : création RSA, suppression d'annonces, création sitelinks et callouts
+  - Avancé : ajout/exclusion d'audiences, labels, tracking template, suffixe URL finale
+
+**À venir :**
+- Côté Meta Ads : ~15 tools de lecture et ~25 tools d'écriture
+- Déploiement sur VPS avec exposition HTTPS
 
 
 ## Stack
