@@ -512,3 +512,38 @@ BUDGET_INFO_QUERY = """
     WHERE campaign.status = 'ENABLED'
       AND segments.date = '{today}'
 """
+
+
+# --- Lookup queries (used by write tools) ---
+
+CAMPAIGN_BUDGET_LOOKUP_QUERY = """
+    SELECT campaign_budget.resource_name
+    FROM campaign
+    WHERE campaign.id = {campaign_id}
+"""
+
+
+EXISTING_AD_SCHEDULES_QUERY = """
+    SELECT campaign_criterion.criterion_id
+    FROM campaign_criterion
+    WHERE campaign_criterion.type = 'AD_SCHEDULE'
+      AND campaign.id = {campaign_id}
+"""
+
+
+LOCATION_CRITERION_LOOKUP_QUERY = """
+    SELECT campaign_criterion.criterion_id
+    FROM campaign_criterion
+    WHERE campaign.id = {campaign_id}
+      AND campaign_criterion.type = 'LOCATION'
+      AND campaign_criterion.location.geo_target_constant = 'geoTargetConstants/{geo_id}'
+"""
+
+
+LANGUAGE_CRITERION_LOOKUP_QUERY = """
+    SELECT campaign_criterion.criterion_id
+    FROM campaign_criterion
+    WHERE campaign.id = {campaign_id}
+      AND campaign_criterion.type = 'LANGUAGE'
+      AND campaign_criterion.language.language_constant = 'languageConstants/{language_id}'
+"""

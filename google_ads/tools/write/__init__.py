@@ -22,6 +22,10 @@ from google_ads.tools.write import (
     pause_keyword,
     remove_keyword,
     remove_negative_keyword,
+    update_ad_schedule,
+    update_bid_modifier,
+    update_campaign_budget,
+    update_campaign_targeting,
     update_keyword_bid,
 )
 
@@ -41,6 +45,11 @@ _WRITE_TOOLS = (
     add_keyword,
     remove_keyword,
     update_keyword_bid,
+    # --- Budget & Targeting ---
+    update_campaign_budget,
+    update_bid_modifier,
+    update_ad_schedule,
+    update_campaign_targeting,
 )
 
 
