@@ -1,4 +1,4 @@
-"""Point d'entrée du serveur MCP Google Ads (transport stdio)."""
+"""Point d'entrée du serveur MCP Tarmaac — Google Ads + Meta Ads (transport stdio)."""
 
 from __future__ import annotations
 
@@ -14,9 +14,10 @@ from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
 from google_ads.tools import register_all_tools
+from meta_ads.tools import register_all_meta_tools
 
 
-log = logging.getLogger("tarmaac.google_ads")
+log = logging.getLogger("tarmaac.mcp")
 
 
 def build_server() -> Server:
@@ -24,9 +25,12 @@ def build_server() -> Server:
 
     Le dispatcher (``list_tools`` / ``call_tool``) lit le registre mutualisé
     attaché au server par les fonctions ``register_*_tools``.
+    En mode dev local (stdio), les tools Google Ads et Meta Ads coexistent
+    dans le même serveur.
     """
-    server: Server = Server("tarmaac-google-ads")
+    server: Server = Server("tarmaac-mcp")
     register_all_tools(server)
+    register_all_meta_tools(server)
 
     registry = getattr(server, "_tarmaac_registry", {"tools": [], "handlers": {}})
 
@@ -62,7 +66,7 @@ async def main() -> None:
     )
 
     server = build_server()
-    log.info("Tarmaac Google Ads MCP server starting (stdio)")
+    log.info("Tarmaac MCP server starting (stdio) — Google Ads + Meta Ads")
 
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
