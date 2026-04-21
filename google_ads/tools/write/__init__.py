@@ -10,23 +10,32 @@ from __future__ import annotations
 from mcp.server import Server
 
 from google_ads.tools.write import (
+    add_audience,
     add_keyword,
+    add_label,
     add_negative_keyword,
+    create_callout,
+    create_responsive_search_ad,
+    create_sitelink,
     enable_ad,
     enable_ad_group,
     enable_campaign,
     enable_keyword,
+    exclude_audience,
     pause_ad,
     pause_ad_group,
     pause_campaign,
     pause_keyword,
+    remove_ad,
     remove_keyword,
     remove_negative_keyword,
     update_ad_schedule,
     update_bid_modifier,
     update_campaign_budget,
     update_campaign_targeting,
+    update_final_url_suffix,
     update_keyword_bid,
+    update_tracking_template,
 )
 
 _WRITE_TOOLS = (
@@ -50,6 +59,17 @@ _WRITE_TOOLS = (
     update_bid_modifier,
     update_ad_schedule,
     update_campaign_targeting,
+    # --- Ads & Assets ---
+    create_responsive_search_ad,
+    remove_ad,
+    create_sitelink,
+    create_callout,
+    # --- Advanced ---
+    add_audience,
+    exclude_audience,
+    add_label,
+    update_tracking_template,
+    update_final_url_suffix,
 )
 
 

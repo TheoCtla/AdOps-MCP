@@ -547,3 +547,10 @@ LANGUAGE_CRITERION_LOOKUP_QUERY = """
       AND campaign_criterion.type = 'LANGUAGE'
       AND campaign_criterion.language.language_constant = 'languageConstants/{language_id}'
 """
+
+
+LABEL_LOOKUP_QUERY = """
+    SELECT label.id, label.name, label.resource_name
+    FROM label
+    WHERE label.name = '{label_name}'
+"""
