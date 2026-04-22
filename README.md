@@ -27,25 +27,41 @@ Chaque serveur expose à la fois des tools de lecture (performances, annonces, m
 
 **Projet en cours.**
 
-**Fait :**
 - Authentification fonctionnelle sur les deux plateformes (Google Ads + Meta Ads)
 - Architecture du serveur MCP en place et validée end-to-end via MCP Inspector et Claude Code
 - Architecture modulaire (1 tool = 1 fichier, helpers partagés, registre centralisé)
-- 24 tools de lecture Google Ads opérationnels :
+
+**Google**
+
+- 24 tools de lecture opérationnels :
   - Core : comptes, performances campagnes/ad groups/mots-clés, daily
   - Search & optimization : search terms, négatifs, annonces (RSA/ETA)
   - Segmentation : géo, device, âge/genre, heure du jour, jour de la semaine
   - Configuration : extensions, settings campagne, ad schedule, bid modifiers, labels, conversion actions
   - Avancé : auction insights, landing pages, audiences, historique des changements, budget/pacing
-- 26 tools d'écriture Google Ads opérationnels :
+
+- 26 tools d'écriture opérationnels :
   - Pause/enable : campagnes, ad groups, annonces, mots-clés
   - Keywords & négatifs : ajout/suppression de mots-clés positifs et négatifs, modification d'enchères CPC
   - Budget & targeting : modification budget, bid modifiers, ad schedule, ciblage géo/langues
   - Ads & assets : création RSA, suppression d'annonces, création sitelinks et callouts
   - Avancé : ajout/exclusion d'audiences, labels, tracking template, suffixe URL finale
 
+**Meta**
+- 14 tools de lecture opérationnels :
+  - Core : comptes, infos compte, performances campagnes/ad sets/ads
+  - Creatives : inventaire des creatives, détails d'un asset
+  - Segmentation : audience breakdown (âge/genre/région), placements, heure du jour, fréquence
+  - Configuration : budgets, audiences custom, événements pixel
+
+- 18 tools d'écriture opérationnels :
+  - Pause/enable : campagnes, ad sets, ads
+  - Création : campagnes, ad sets, custom audiences, lookalike audiences, duplication d'ad set
+  - Budget & targeting : budget campagne, budget/bid/schedule/placements/targeting ad set
+  - Assets : upload d'image
+
 **À venir :**
-- Côté Meta Ads : ~15 tools de lecture et ~25 tools d'écriture
+- Tools Meta Ads pas opérationnels : création d'ad, duplication d'ad, modification du texte/URL/UTM d'une ad, renommage d'ad
 - Déploiement sur VPS avec exposition HTTPS
 
 
