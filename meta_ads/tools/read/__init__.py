@@ -5,6 +5,7 @@ from __future__ import annotations
 from mcp.server import Server
 
 from meta_ads.tools.read import (
+    debug_pages,
     get_account_info,
     get_ad_creatives,
     get_ad_performance,
@@ -39,6 +40,8 @@ _META_READ_TOOLS = (
     get_pixel_events,
     get_ad_creatives,
     get_creative_asset_details,
+    # --- Debug (temporaire) ---
+    debug_pages,
 )
 
 

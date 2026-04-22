@@ -61,6 +61,11 @@ def safe_float(value: Any, default: float = 0.0) -> float:
         return default
 
 
+def euros_to_cents(euros: float) -> int:
+    """Convertit des euros en centimes Meta (arrondi entier)."""
+    return int(round(euros * 100))
+
+
 def cents_to_euros(cents: int | str | None) -> float | None:
     """Convertit les centimes Meta en euros.
 
