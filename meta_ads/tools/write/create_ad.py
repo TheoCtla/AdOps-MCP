@@ -116,7 +116,7 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
         return error_payload(str(ex))
 
     page_id: str | None = None
-    instagram_actor_id: str | None = None
+    instagram_user_id: str | None = None
 
     try:
         from facebook_business.adobjects.ad import Ad
@@ -141,65 +141,54 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
             cta_type = creative_spec.get("call_to_action_type", "LEARN_MORE")
             object_url = creative_spec.get("object_url", "")
 
-            # 1. Auto-détection page_id
+            # Auto-détection page_id et instagram_user_id depuis les ads
+            # existantes.
             page_id = creative_spec.get("page_id")
-            instagram_actor_id = creative_spec.get("instagram_actor_id")
+            instagram_user_id = creative_spec.get("instagram_user_id")
 
-            if not page_id:
-                # Méthode prioritaire : regarder les ads existantes du compte.
+            if not page_id or not instagram_user_id:
                 try:
                     existing_ads = account.get_ads(
-                        fields=["creative{object_story_spec}"],
-                        params={"limit": 5},
+                        fields=["creative"],
+                        params={"limit": 3},
                     )
                     for existing_ad in existing_ads:
-                        creative_data = existing_ad.get("creative", {})
-                        oss = creative_data.get("object_story_spec", {})
-                        if oss.get("page_id"):
-                            page_id = oss["page_id"]
+                        creative_id_existing = existing_ad.get(
+                            "creative", {}
+                        ).get("id")
+                        if creative_id_existing:
+                            from facebook_business.adobjects.adcreative import (
+                                AdCreative,
+                            )
+
+                            creative = AdCreative(creative_id_existing)
+                            creative_data = creative.api_get(
+                                fields=["object_story_spec"]
+                            )
+                            oss = creative_data.get(
+                                "object_story_spec", {}
+                            )
+                            if not page_id and oss.get("page_id"):
+                                page_id = oss["page_id"]
                             if (
-                                not instagram_actor_id
-                                and oss.get("instagram_actor_id")
+                                not instagram_user_id
+                                and oss.get("instagram_user_id")
                             ):
-                                instagram_actor_id = oss[
-                                    "instagram_actor_id"
+                                instagram_user_id = oss[
+                                    "instagram_user_id"
                                 ]
-                            break
+                            if page_id and instagram_user_id:
+                                break
                 except Exception:
                     log.exception(
-                        "Erreur lors de l'auto-détection de page_id "
-                        "via les ads existantes"
-                    )
-
-            if not page_id:
-                # Fallback : chercher dans les client_pages du BM.
-                try:
-                    from facebook_business.adobjects.business import (
-                        Business,
-                    )
-
-                    business_id = get_meta_api()
-                    business = Business(business_id)
-                    client_pages = business.get_client_pages(
-                        fields=["id", "name"]
-                    )
-                    # Prendre la première page trouvée — pas idéal mais
-                    # mieux que rien. En prod, l'utilisateur devrait
-                    # passer page_id.
-                    for cp in client_pages:
-                        page_id = cp["id"]
-                        break
-                except Exception:
-                    log.exception(
-                        "Erreur lors du fallback page_id via client_pages"
+                        "Erreur lors de l'auto-détection via les ads "
+                        "existantes"
                     )
 
             if not page_id:
                 return error_payload(
                     "Impossible de trouver la page Facebook pour ce compte. "
-                    "Ajoutez page_id dans creative_spec. "
-                    "Astuce : regardez les ads existantes du compte dans "
-                    "Meta Ads Manager."
+                    "Ajoutez page_id dans creative_spec."
                 )
 
             link_data: dict[str, Any] = {
@@ -219,8 +208,8 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
                 "page_id": page_id,
                 "link_data": link_data,
             }
-            if instagram_actor_id:
-                story_spec["instagram_actor_id"] = instagram_actor_id
+            if instagram_user_id:
+                story_spec["instagram_user_id"] = instagram_user_id
 
             params[Ad.Field.creative] = {"object_story_spec": story_spec}
 
@@ -252,7 +241,7 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
         "adset_id": adset_id,
         "status": status,
         "page_id": page_id,
-        "instagram_actor_id": instagram_actor_id,
+        "instagram_user_id": instagram_user_id,
         "ad_account_id": ad_account_id,
     }
     return [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False))]
