@@ -1,4 +1,4 @@
-# adops-mcp
+# AdOps-MCP
 
 A Model Context Protocol (MCP) server that enables AI assistants to read from and act on Google Ads and Meta Ads accounts using natural language. Built for digital advertising agencies managing multiple client accounts.
 
