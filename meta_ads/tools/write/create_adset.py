@@ -39,6 +39,10 @@ TOOL_DEFINITION = Tool(
         "Common optimization goals: LEAD_GENERATION, LINK_CLICKS, IMPRESSIONS, REACH, "
         "CONVERSIONS, LANDING_PAGE_VIEWS, OFFSITE_CONVERSIONS.\n"
         "\n"
+        "For outcome-based campaigns (e.g. OUTCOME_LEADS), Meta requires a promoted_object "
+        "linking the ad set to a concrete asset — typically {\"page_id\": \"<FB_PAGE_ID>\"} "
+        "for lead ads. Pass it via the promoted_object parameter.\n"
+        "\n"
         "⚠️ This tool MODIFIES data. A new ad set is created in the campaign."
     ),
     inputSchema={
@@ -114,6 +118,17 @@ TOOL_DEFINITION = Tool(
             "end_time": {
                 "type": "string",
                 "description": "Optional end time (ISO 8601). Required for lifetime budget.",
+            },
+            "promoted_object": {
+                "type": "object",
+                "description": (
+                    "Asset promoted by this ad set. Required by Meta for "
+                    "outcome-based campaigns (OUTCOME_LEADS, etc.). "
+                    "Example for lead ads: {\"page_id\": \"<FB_PAGE_ID>\"}. "
+                    "Other common shapes: {\"pixel_id\": \"...\", "
+                    "\"custom_event_type\": \"PURCHASE\"}, "
+                    "{\"application_id\": \"...\", \"object_store_url\": \"...\"}."
+                ),
             },
             "status": {
                 "type": "string",
@@ -206,6 +221,10 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
             params[AdSet.Field.start_time] = start_time
         if end_time:
             params[AdSet.Field.end_time] = end_time
+
+        promoted_object = args.get("promoted_object")
+        if promoted_object:
+            params[AdSet.Field.promoted_object] = promoted_object
 
         adset = account.create_ad_set(params=params)
     except Exception as ex:

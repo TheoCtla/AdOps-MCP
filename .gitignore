@@ -65,5 +65,10 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# ===== Claude Code (explicite — déjà couvert par *.json) =====
-.claude/settings.local.json
+# ===== Claude Code =====
+.claude/
+.claude-code/
+CLAUDE.md
+**/CLAUDE.md
+.claudeignore
+.claude.json

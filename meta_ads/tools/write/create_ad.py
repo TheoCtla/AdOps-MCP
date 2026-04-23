@@ -32,7 +32,8 @@ TOOL_DEFINITION = Tool(
         "\n"
         "Use this tool to add a new ad to an ad set. For creative_spec, provide an object "
         "with at minimum: body (primary text), title (headline), image_hash or image_url, "
-        "object_url (destination), and call_to_action_type (LEARN_MORE, SHOP_NOW, etc.).\n"
+        "object_url (destination), and call_to_action_type (LEARN_MORE, SHOP_NOW, etc.). "
+        "page_id is auto-detected from existing ads in the account when omitted.\n"
         "\n"
         "⚠️ This tool MODIFIES data. A new ad is created in the ad set."
     ),
@@ -65,7 +66,8 @@ TOOL_DEFINITION = Tool(
                 "type": "object",
                 "description": (
                     "Inline creative spec: {body, title, link_description, "
-                    "image_hash, call_to_action_type, object_url}."
+                    "image_hash, call_to_action_type, object_url, page_id?}. "
+                    "page_id is auto-detected from existing ads when omitted."
                 ),
             },
             "status": {
@@ -116,7 +118,6 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
         return error_payload(str(ex))
 
     page_id: str | None = None
-    instagram_user_id: str | None = None
 
     try:
         from facebook_business.adobjects.ad import Ad
@@ -133,7 +134,6 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
         if creative_id:
             params[Ad.Field.creative] = {"creative_id": creative_id}
         else:
-            # Transform flat creative_spec into object_story_spec format.
             body = creative_spec.get("body", "")
             title = creative_spec.get("title", "")
             link_description = creative_spec.get("link_description", "")
@@ -141,12 +141,9 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
             cta_type = creative_spec.get("call_to_action_type", "LEARN_MORE")
             object_url = creative_spec.get("object_url", "")
 
-            # Auto-détection page_id et instagram_user_id depuis les ads
-            # existantes.
             page_id = creative_spec.get("page_id")
-            instagram_user_id = creative_spec.get("instagram_user_id")
 
-            if not page_id or not instagram_user_id:
+            if not page_id:
                 try:
                     existing_ads = account.get_ads(
                         fields=["creative"],
@@ -165,24 +162,13 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
                             creative_data = creative.api_get(
                                 fields=["object_story_spec"]
                             )
-                            oss = creative_data.get(
-                                "object_story_spec", {}
-                            )
-                            if not page_id and oss.get("page_id"):
+                            oss = creative_data.get("object_story_spec", {})
+                            if oss.get("page_id"):
                                 page_id = oss["page_id"]
-                            if (
-                                not instagram_user_id
-                                and oss.get("instagram_user_id")
-                            ):
-                                instagram_user_id = oss[
-                                    "instagram_user_id"
-                                ]
-                            if page_id and instagram_user_id:
                                 break
                 except Exception:
                     log.exception(
-                        "Erreur lors de l'auto-détection via les ads "
-                        "existantes"
+                        "Erreur lors de l'auto-détection du page_id"
                     )
 
             if not page_id:
@@ -191,25 +177,21 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
                     "Ajoutez page_id dans creative_spec."
                 )
 
-            link_data: dict[str, Any] = {
-                "message": body,
-                "name": title,
-                "description": link_description,
-                "link": object_url,
-                "call_to_action": {
-                    "type": cta_type,
-                    "value": {"link": object_url},
+            story_spec: dict[str, Any] = {
+                "page_id": page_id,
+                "link_data": {
+                    "message": body,
+                    "name": title,
+                    "description": link_description,
+                    "link": object_url,
+                    "call_to_action": {
+                        "type": cta_type,
+                        "value": {"link": object_url},
+                    },
                 },
             }
             if image_hash:
-                link_data["image_hash"] = image_hash
-
-            story_spec: dict[str, Any] = {
-                "page_id": page_id,
-                "link_data": link_data,
-            }
-            if instagram_user_id:
-                story_spec["instagram_user_id"] = instagram_user_id
+                story_spec["link_data"]["image_hash"] = image_hash
 
             params[Ad.Field.creative] = {"object_story_spec": story_spec}
 
@@ -241,7 +223,6 @@ async def handler(arguments: dict[str, Any]) -> list[TextContent]:
         "adset_id": adset_id,
         "status": status,
         "page_id": page_id,
-        "instagram_user_id": instagram_user_id,
         "ad_account_id": ad_account_id,
     }
     return [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False))]
